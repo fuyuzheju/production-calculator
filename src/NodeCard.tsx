@@ -40,8 +40,9 @@ const InlineEditor: React.FC<{
             /> :
             <label
                 onClick={() => setEditing(true)}
+                style={{opacity: value === '' ? 0.5 : 1}}
                 className={clsname}
-            >{value}</label>
+            >{value === '' ? placeHolder : value}</label>
         }
     </>
 }
