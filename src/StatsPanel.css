@@ -1,0 +1,63 @@
+.panel-divider {
+    height: 3px;
+    border-radius: 1.5px;
+    width: 80%;
+    flex-shrink: 0;
+    background-color: var(--gray-400);
+}
+
+/* === 统计面板 === */
+.stats-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 32px;
+    padding: 32px 8px;
+    background: rgba(255, 255, 255, 0.7);
+    border-bottom: 1px solid var(--gray-200);
+    overflow-y: auto;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    background: var(--gray-100);
+    border-radius: 50%;
+    border: none;
+    font-size: 1rem;
+    width: 36px;
+    height: 36px;
+}
+
+.stat-item.file-action {
+    cursor: pointer;
+    background-color: #e4feff;
+}
+
+.stat-item.file-action:hover {
+    background-color: #bbf9fb;
+}
+
+.stat-item.summary-btn {
+    cursor: pointer;
+    background: #fffd9d;
+}
+
+.stat-item.summary-btn:hover {
+    background: #faf871;
+}
+
+.stat-item.normal {
+    background: var(--success-light);
+}
+
+.stat-item.warning {
+    background: var(--warning-light);
+}
+
+.stat-item.error {
+    background: var(--danger-light);
+}

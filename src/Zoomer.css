@@ -1,0 +1,61 @@
+.zoom-controls {
+    position: fixed;
+    /* 固定在视口，或者用 absolute 相对于 app-main */
+    bottom: 80px;
+    /* 距离底部 (footer 高度上方一点) */
+    right: 32px;
+    /* 距离右侧 */
+    display: flex;
+    align-items: center;
+    background: white;
+    padding: 4px;
+    border-radius: 8px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--gray-200);
+    z-index: 50;
+    /* 确保在树图上方 */
+    transition: opacity 0.3s;
+}
+
+/* 鼠标不悬停在 controls 上时稍微透明一点，减少干扰 */
+.zoom-controls:not(:hover) {
+    opacity: 0.8;
+}
+
+.zoom-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    color: var(--gray-600);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.zoom-btn:hover {
+    background: var(--gray-100);
+    color: var(--primary);
+}
+
+.zoom-btn:active {
+    background: var(--gray-200);
+}
+
+.zoom-level {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    min-width: 48px;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    padding: 0 4px;
+}
+
+.zoom-level:hover {
+    color: var(--primary);
+}
