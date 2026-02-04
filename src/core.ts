@@ -3,14 +3,12 @@
 import type { PhaseData, PreAllocation, ProjectData, AllocNode } from "./data";
 import { RuleType } from "./data";
 
-// --- 类型定义 ---
-
 export type CalculationMap = Record<string, {
-    amount: number;          // 最终分到的钱
-    percentOfParent: number; // 占比
-    isError: boolean;        // 是否自身金额为负（接收到了负资产）
+    amount: number;
+    percentOfParent: number;
+    isError: boolean;
     isWarning: boolean;
-    unallocated: number;     // 新增：该节点未分配给子节点的余额
+    unallocated: number;
 }>;
 
 export const calculateTree = (
@@ -19,13 +17,11 @@ export const calculateTree = (
     resultMap: CalculationMap = {}
 ): CalculationMap => {
 
-    // 初始化当前节点结果
-    // 注意：初始 unallocated 设为 0，会在函数末尾更新
     resultMap[node.id] = {
         amount: inputAmount,
         percentOfParent: 0,
-        isError: inputAmount < -0.01, // 初始化判断，函数末尾计算完unallocated后仍然会判断
-        isWarning: false, // 初始化，在函数末尾更新
+        isError: inputAmount < -0.01,
+        isWarning: false,
         unallocated: inputAmount,
     };
 
@@ -39,7 +35,6 @@ export const calculateTree = (
 
     let remainingAmount = inputAmount;
 
-    // 1. 扣除固定金额
     fixedNodes.forEach(child => {
         const allocated = child.rule.value;
         remainingAmount -= allocated;
@@ -47,7 +42,6 @@ export const calculateTree = (
         resultMap[child.id].percentOfParent = inputAmount === 0 ? 0 : (allocated / inputAmount);
     });
 
-    // 2. 扣除百分比
     percentNodes.forEach(child => {
         const allocated = inputAmount * (child.rule.value / 100);
         remainingAmount -= allocated;
@@ -55,10 +49,7 @@ export const calculateTree = (
         resultMap[child.id].percentOfParent = child.rule.value / 100;
     });
 
-    // 3. 分配剩余部分 & 计算未分配余额
     if (remainderNodes.length > 0) {
-        // 如果有"吸纳剩余"的节点，它们会把剩余的钱（无论是正还是负）都拿走
-        // 所以此时父节点的 unallocated 必定为 0
         const amountPerNode = remainingAmount / remainderNodes.length;
         remainderNodes.forEach(child => {
             calculateTree(child, amountPerNode, resultMap);
@@ -66,13 +57,9 @@ export const calculateTree = (
         });
         resultMap[node.id].unallocated = 0;
     } else {
-        // 修改 2: 如果没有"吸纳剩余"节点，剩余的钱（正数或负数）就留在了父节点手里
-        // 只有当 remainingAmount > 0 时我们视作"未分配"（Warning）
-        // 如果 remainingAmount < 0，其实也是 Error（超额分配），但我们主要通过 isError 标记来追踪
         resultMap[node.id].unallocated = remainingAmount;
     }
 
-    // 判断isError
     resultMap[node.id].isError = inputAmount < -0.01 || resultMap[node.id].unallocated < -0.01;
     resultMap[node.id].isWarning = (!resultMap[node.id].isError) &&
         (resultMap[node.id].unallocated > 0.01) &&
@@ -98,21 +85,20 @@ export const calculatePhaseRestValue = (phase: PhaseData): number => {
     return restValue;
 }
 
-// --- 跨项目汇总逻辑 ---
+export interface SourceData {
+    projectId: string;
+    phaseId: string;
+    path: string[];
+    amount: number;
+}
 export interface PersonStat {
     name: string;
     totalAmount: number;
-    sources: { path: string[]; amount: number }[];
+    sources: SourceData[];
 }
 
-/**
- * 聚合所有项目的末端节点数据
- * @param projects 所有项目列表
- * @param calculateFn 计算函数引用
- */
-export const aggregateGlobalStats = (
+export const aggregateStats = (
     projects: ProjectData[],
-    calculateFn: typeof calculateTree
 ): PersonStat[] => {
     const map = new Map<string, PersonStat>();
 
@@ -120,12 +106,12 @@ export const aggregateGlobalStats = (
         pj.phases.forEach(ph => { 
             const restValue = calculatePhaseRestValue(ph);
             
-            const results = calculateFn(ph.rootNode, restValue);
+            const results = calculateTree(ph.rootNode, restValue);
 
             const traverse = (node: AllocNode, path: string[]) => {
                 const isLeaf = !node.children || node.children.length === 0;
 
-                if (isLeaf) {
+                if (isLeaf && path.length !== 0) {
                     const nodeResult = results[node.id];
                     if (!nodeResult) return;
 
@@ -137,17 +123,20 @@ export const aggregateGlobalStats = (
 
                     current.totalAmount += nodeResult.amount;
                     current.sources.push({
-                        path: path,
+                        projectId: pj.id,
+                        phaseId: ph.id,
+                        path: path.slice(1,), // the first element of path must be the name of root, which is always empty string
                         amount: nodeResult.amount
                     });
 
                     map.set(node.name, current);
                 } else {
-                    node.children.forEach((child) => traverse(child, [...path, node.name]));
+                    const newPath = [...path, node.name];
+                    node.children.forEach((child) => traverse(child, newPath));
                 }
             };
 
-            traverse(ph.rootNode, [pj.name, ph.name]);
+            traverse(ph.rootNode, []);
         })
     });
 
