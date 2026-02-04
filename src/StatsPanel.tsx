@@ -110,7 +110,7 @@ function StatsPanel({ setSummaryOpen }: { setSummaryOpen: (open: boolean) => voi
                 type="file"
                 ref={fileInputRef}
                 style={{ display: 'none' }}
-                accept=".json"
+                accept=".prod"
                 onChange={handleFileChange}
             />
 

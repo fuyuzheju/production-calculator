@@ -40,7 +40,7 @@ const InlineEditor: React.FC<{
             /> :
             <label
                 onClick={() => setEditing(true)}
-                style={{opacity: value === '' ? 0.5 : 1}}
+                style={{ opacity: value === '' ? 0.5 : 1 }}
                 className={clsname}
             >{value === '' ? placeHolder : value}</label>
         }
@@ -389,7 +389,7 @@ const RootNodeCard: React.FC<{ node: AllocNode }> = ({ node }) => {
                         </div>
 
                         {/* 操作按钮 */}
-                        <div className="node-actions">
+                        <div className="action-group">
                             <AddActionButton addNode={(name) => addNode(node.id, name)} />
                         </div>
                     </div>
@@ -459,15 +459,15 @@ const NodeCard: React.FC<{
     return (<>
         <div className={`node-content ${layoutType}`}>
             <div className={`node-card 
-                            ${isDragging ? 'dragging' : ''}
-                            ${selected ? 'selected' : ''}
+                            ${isDragging ? 'dragging' : ''} 
+                            ${selected ? 'selected': ''} 
                             `}
                 onClick={(e) => { e.stopPropagation(); selectNode(node.id); }}
             >
                 {hasChildren && <FoldButton toggleNodeLayout={() => toggleNodeLayout(node.id)} layoutType={layoutType} />}
 
                 <div className={`node-card-content 
-                            ${!hasChildren ? 'leaf' : ''}
+                            ${!hasChildren ? 'leaf' : ''} 
                             ${result.isError ? 'has-error' : ''} 
                             ${dragClass}`}
                     draggable={true}
@@ -493,19 +493,15 @@ const NodeCard: React.FC<{
                             color={result.isError ? '#ef4444' : ruleConfig.color}
                         />
                     </div>
-
                 </div>
+
                 <div className={`node-info-window ${result.isWarning ? 'warning' : ''} ${result.isError ? 'error' : ''}`}>
-                    <div className="action-group">
-                        <AddActionButton addNode={(name) => addNode(node.id, name)} />
-                        <RemoveActionButton name={node.name} removeNode={() => removeNode(node.id)} />
-                    </div>
                     <div className="node-info-column editible">
                         <span className="column-left">名称</span>
                         <InlineEditor
                             value={node.name}
                             setValue={(val) => updateNodeName(node.id, val)}
-                            placeHolder="-"
+                            placeHolder="--"
                             clsname="column-right"
                         />
                     </div>
@@ -519,7 +515,7 @@ const NodeCard: React.FC<{
                                 onChange={(e) => updateNodeRule(node.id, { type: e.target.value as RuleType })}
                             >
                                 {Object.entries(RuleType).map(([_, type]) =>
-                                    <option value={type}>{RULE_CONFIG[type].label}</option>
+                                    <option value={type} key={type}>{RULE_CONFIG[type].label}</option>
                                 )}
                             </select>
                             {node.rule.type !== RuleType.REMAINDER && (
@@ -550,6 +546,12 @@ const NodeCard: React.FC<{
                         <span className="column-right">{formatMoney(result.unallocated)}</span>
                     </div>
                 </div>
+
+                <div className="action-group">
+                    <AddActionButton addNode={(name) => addNode(node.id, name)} />
+                    <RemoveActionButton name={node.name} removeNode={() => removeNode(node.id)} />
+                </div>
+
 
             </div >
 
