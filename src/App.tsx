@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useStore } from './store'; // 引入类型
+import { useStore } from './store';
 import RootNodeCard from './NodeCard';
 import SummaryModal from './SummaryModal';
 import StatsPanel from './StatsPanel';
@@ -8,68 +8,31 @@ import TabsBar from './TabsBar';
 
 import './App.css';
 import { init } from './lib';
-
-const useGlobalShortcuts = () => {
-    const {
-        selectedNodeId,
-        copyNode,
-        pasteNode,
-        removeNode,
-        selectNode,
-    } = useStore();
-
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            // 1. 如果焦点在输入框或文本域内，不触发快捷键（保留系统的复制粘贴文本功能）
-            const target = e.target as HTMLElement;
-            if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
-                return;
-            }
-
-            const MacOS = /mac/i.test(navigator.userAgent);
-            const isCmdOrCtrl = MacOS ? e.metaKey : e.ctrlKey; // Windows用Ctrl, Mac用Command(Meta)
-
-            if (isCmdOrCtrl && e.key.toLowerCase() === 'c') {
-                if (selectedNodeId) {
-                    e.preventDefault();
-                    copyNode();
-                }
-            }
-
-            if (isCmdOrCtrl && e.key.toLowerCase() === 'v') {
-                if (selectedNodeId) {
-                    e.preventDefault();
-                    pasteNode();
-                }
-            }
-
-            if (e.key === 'Delete' || e.key === 'Backspace') {
-                if (selectedNodeId) {
-                    e.preventDefault();
-                    if (confirm("确定删除当前节点及其所有子节点吗？")) {
-                        removeNode(selectedNodeId);
-                    }
-                    selectNode(null);
-                }
-            }
-
-            if (e.key === 'Escape') {
-                selectNode(null);
-            }
-        };
-
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [selectedNodeId, copyNode, pasteNode, removeNode, selectNode]);
-};
+import { useShortcut } from './shortcut';
 
 export default function ProdCalc() {
-    const { activePhase, selectNode, loadProject } = useStore();
+    const {
+        activePhase, selectedNodeId, selectNode, loadProject,
+        copyNode, pasteNode, removeNode
+    } = useStore();
 
     const [scale, setScale] = useState(1.0);
     const [isSummaryOpen, setSummaryOpen] = useState(false);
 
-    useGlobalShortcuts();
+    const deleteCurrentNode = () => {
+        if (selectedNodeId) {
+            if (confirm("确定删除当前节点及其所有子节点吗？")) {
+                removeNode(selectedNodeId);
+            }
+            selectNode(null);
+        }
+    }
+
+    useShortcut("Ctrl+KeyC", copyNode);
+    useShortcut("Ctrl+KeyV", pasteNode);
+    useShortcut("Backspace", deleteCurrentNode);
+    useShortcut("Delete", deleteCurrentNode);
+
     useEffect(() => {
         init(loadProject);
     }, [loadProject]);

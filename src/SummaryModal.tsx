@@ -3,6 +3,7 @@ import { useStore } from './store';
 import { aggregateStats, type SourceData } from './core';
 
 import "./SummaryModal.css"
+import { useShortcut } from './shortcut';
 
 const formatMoney = (val: number) =>
     new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY', maximumFractionDigits: 0 }).format(val);
@@ -59,6 +60,8 @@ const SummaryModal: React.FC<Props> = ({ isOpen, onClose }) => {
         setExcludedIds(new Set());
         onClose();
     };
+
+    useShortcut("Escape", handleClose);
 
     const toggleProject = (id: string) => {
         const newExcluded = new Set(excludedIds);

@@ -5,6 +5,7 @@ import { saveData } from "./lib";
 import { phaseViewRecover, ProjectDataSchema, type AllocNode } from "./data";
 
 import "./StatsPanel.css";
+import { useShortcut } from "./shortcut";
 
 type AppStatus = 'error' | 'warning' | 'normal';
 
@@ -20,7 +21,7 @@ function StatsPanel({ setSummaryOpen }: { setSummaryOpen: (open: boolean) => voi
         if (success) {
             markSaved(activeProject.id);
         } else {
-            alert("保存失败");
+            alert("保存取消或失败");
         }
     }
 
@@ -51,6 +52,8 @@ function StatsPanel({ setSummaryOpen }: { setSummaryOpen: (open: boolean) => voi
         e.target.value = '';
     };
 
+    useShortcut("Ctrl+KeyO", handleOpenFile);
+    useShortcut("Ctrl+KeyS", handleSaveFile);
 
     const { stats, appStatus, statusMessage, statusIcon } = useMemo(() => {
         const countNodes = (node: AllocNode): number =>
