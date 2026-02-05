@@ -12,8 +12,8 @@ import { useShortcut } from './shortcut';
 
 export default function App() {
     const {
-        activePhase, selectedNodeId, selectNode, loadProject,
-        copyNode, pasteNode, removeNode
+        activePhase, selectedNodeId, activeProjectId, selectNode, loadProject,
+        copyNode, pasteNode, removeNode, removeProject,
     } = useStore();
 
     const [scale, setScale] = useState(1.0);
@@ -28,8 +28,13 @@ export default function App() {
         }
     }
 
+    const closeCurrentProject = () => {
+        removeProject(activeProjectId);
+    }
+
     useShortcut("Ctrl+KeyC", copyNode);
     useShortcut("Ctrl+KeyV", pasteNode);
+    useShortcut("Ctrl+KeyW", closeCurrentProject);
     useShortcut("Backspace", deleteCurrentNode);
     useShortcut("Delete", deleteCurrentNode);
 
