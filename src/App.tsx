@@ -10,7 +10,7 @@ import './App.css';
 import { init } from './lib';
 import { useShortcut } from './shortcut';
 
-export default function ProdCalc() {
+export default function App() {
     const {
         activePhase, selectedNodeId, selectNode, loadProject,
         copyNode, pasteNode, removeNode

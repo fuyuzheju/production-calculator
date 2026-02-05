@@ -17,7 +17,7 @@ function StatsPanel({ setSummaryOpen }: { setSummaryOpen: (open: boolean) => voi
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleSaveFile = async () => {
-        const success = await saveData(activeProject, `${activeProject.name || 'allocation'}-data.prod`);
+        const success = await saveData(activeProject, `${activeProject.name || 'allocation'}-data.ratio`);
         if (success) {
             markSaved(activeProject.id);
         } else {
@@ -113,7 +113,7 @@ function StatsPanel({ setSummaryOpen }: { setSummaryOpen: (open: boolean) => voi
                 type="file"
                 ref={fileInputRef}
                 style={{ display: 'none' }}
-                accept=".prod"
+                accept=".ratio"
                 onChange={handleFileChange}
             />
 

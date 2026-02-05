@@ -15,10 +15,10 @@ export const saveData = async (data: any, suggestedName: string): Promise<boolea
         try {
             // 打开原生的保存对话框
             const filePath = await save({
-                defaultPath: suggestedName.endsWith('.prod') ? suggestedName : `${suggestedName}.prod`,
+                defaultPath: suggestedName.endsWith('.ratio') ? suggestedName : `${suggestedName}.ratio`,
                 filters: [{
-                    name: 'PROD Files',
-                    extensions: ['prod'] // 这里指定扩展名为 .prod
+                    name: 'RatioFlow Files',
+                    extensions: ['ratio']
                 }]
             });
 
@@ -44,8 +44,8 @@ export const saveData = async (data: any, suggestedName: string): Promise<boolea
                 suggestedName: suggestedName,
                 types: [
                     {
-                        description: 'PROD Files',
-                        accept: { 'application/json': ['.prod'] },
+                        description: 'RatioFlow Files',
+                        accept: { 'application/json': ['.ratio'] },
                     },
                 ],
             };
@@ -64,7 +64,7 @@ export const saveData = async (data: any, suggestedName: string): Promise<boolea
     // Fallback for older browsers
     let fileName = prompt('请输入文件名', suggestedName);
     if (!fileName) return false;
-    if (!fileName.endsWith('.prod')) fileName += '.prod';
+    if (!fileName.endsWith('.ratio')) fileName += '.ratio';
 
     const blob = new Blob([jsonString], { type: 'application/json' });
     const url = URL.createObjectURL(blob);

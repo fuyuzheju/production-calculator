@@ -1,8 +1,8 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "Production Calculator",
+  "productName": "RatioFlow",
   "version": "0.1.0",
-  "identifier": "com.caihuijingchun.tools",
+  "identifier": "com.fuyuzheju.ratioflow",
   "build": {
     "frontendDist": "../dist",
     "devUrl": "http://localhost:5173",
@@ -13,7 +13,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "Production Calculator",
+        "title": "RatioFlow",
         "width": 800,
         "height": 600,
         "resizable": true,
@@ -36,9 +36,9 @@
     ],
     "fileAssociations": [
         {
-            "ext": ["prod"],
-            "name": "Production Document",
-            "description": "Open with production calculator",
+            "ext": ["ratio"],
+            "name": "RatioFlow Document",
+            "description": "Open with RatioFlow",
             "role": "Editor"
         }
     ]
