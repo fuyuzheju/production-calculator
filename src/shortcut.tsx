@@ -52,7 +52,7 @@ export const ShortcutProvider = ({ children }: PropsWithChildren) => {
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const useShortcut = (key: string, callback: KeyHandler) => {
+export const useShortcut = (key: string, callback: KeyHandler, preventingDefault: boolean = false) => {
     const context = useContext(ShortcutContext);
     if (!context) throw new Error("useShortcut hook used outside provider");
 
@@ -62,12 +62,15 @@ export const useShortcut = (key: string, callback: KeyHandler) => {
 
     useEffect(() => {
         const handler = (e: KeyboardEvent) => {
-            e.preventDefault();
+            if (preventingDefault) {
+                e.preventDefault();
+                console.log("default prevented");
+            }
             console.log("handle", key);
             callbackRef.current(e);
         };
 
         register(key, handler);
         return () => unregister(key, handler);
-    }, [key, register, unregister]);
+    }, [key, register, unregister, preventingDefault]);
 }

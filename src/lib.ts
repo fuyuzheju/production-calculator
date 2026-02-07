@@ -1,6 +1,6 @@
 // 引入 Tauri 的 API
 import { writeTextFile, open } from '@tauri-apps/plugin-fs';
-import { save } from '@tauri-apps/plugin-dialog';
+import { confirm, save } from '@tauri-apps/plugin-dialog';
 import { listen } from "@tauri-apps/api/event";
 import type { ProjectData } from './data';
 import { phaseViewRecover, ProjectDataSchema } from './data';
@@ -128,4 +128,13 @@ export const init = async (loadProject: (data: ProjectData) => void) => {
             unlistenFn();
         }
     };
+}
+
+export const waitConfirm = async (message: string) => {
+    if (isTauri) {
+        return await confirm(message);
+    }
+    else {
+        return window.confirm(message);
+    }
 }

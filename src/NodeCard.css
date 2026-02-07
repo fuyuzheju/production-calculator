@@ -484,6 +484,7 @@ label.name-input {
 .node-info-column .column-right {
     text-align: center;
     display: flex;
+    padding: 0 12px;
 }
 
 .node-info-column:focus-within {

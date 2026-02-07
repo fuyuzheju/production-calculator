@@ -7,7 +7,7 @@ import Zoomer from './Zoomer';
 import TabsBar from './TabsBar';
 
 import './App.css';
-import { init } from './lib';
+import { init, waitConfirm } from './lib';
 import { useShortcut } from './shortcut';
 
 export default function App() {
@@ -19,9 +19,11 @@ export default function App() {
     const [scale, setScale] = useState(1.0);
     const [isSummaryOpen, setSummaryOpen] = useState(false);
 
-    const deleteCurrentNode = () => {
+    const deleteCurrentNode = async (e: KeyboardEvent) => {
+        if ((e.target instanceof HTMLElement) &&
+            e.target.tagName.toUpperCase() === "INPUT") return;
         if (selectedNodeId) {
-            if (confirm("确定删除当前节点及其所有子节点吗？")) {
+            if (await waitConfirm("确定删除当前节点及其所有子节点吗？")) {
                 removeNode(selectedNodeId);
             }
             selectNode(null);
@@ -34,7 +36,7 @@ export default function App() {
 
     useShortcut("Ctrl+KeyC", copyNode);
     useShortcut("Ctrl+KeyV", pasteNode);
-    useShortcut("Ctrl+KeyW", closeCurrentProject);
+    useShortcut("Ctrl+KeyW", closeCurrentProject, true);
     useShortcut("Backspace", deleteCurrentNode);
     useShortcut("Delete", deleteCurrentNode);
 

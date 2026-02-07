@@ -52,8 +52,8 @@ function StatsPanel({ setSummaryOpen }: { setSummaryOpen: (open: boolean) => voi
         e.target.value = '';
     };
 
-    useShortcut("Ctrl+KeyO", handleOpenFile);
-    useShortcut("Ctrl+KeyS", handleSaveFile);
+    useShortcut("Ctrl+KeyO", handleOpenFile, true);
+    useShortcut("Ctrl+KeyS", handleSaveFile, true);
 
     const { stats, appStatus, statusMessage, statusIcon } = useMemo(() => {
         const countNodes = (node: AllocNode): number =>
