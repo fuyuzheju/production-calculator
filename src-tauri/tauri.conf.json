@@ -14,9 +14,8 @@
       {
         "label": "main",
         "title": "RatioFlow",
-        "width": 800,
-        "height": 600,
         "resizable": true,
+        "maximized": true,
         "fullscreen": false
       }
     ],
