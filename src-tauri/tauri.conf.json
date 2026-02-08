@@ -16,7 +16,8 @@
         "title": "RatioFlow",
         "resizable": true,
         "maximized": true,
-        "fullscreen": false
+        "fullscreen": false,
+        "dragDropEnabled": false
       }
     ],
     "security": {
