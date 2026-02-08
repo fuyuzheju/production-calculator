@@ -4,6 +4,7 @@ import { PreAllocationRuleType, RuleType, type NodeLayoutType, type AllocNode } 
 import React, { Fragment, useState } from 'react';
 
 import "./NodeCard.css"
+import { waitConfirm } from './lib';
 
 // --- 进度条组件 ---
 const ProgressBar: React.FC<{ percent: number; color: string }> = ({ percent, color }) => {
@@ -113,9 +114,9 @@ const RemoveActionButton: React.FC<{
 }> = ({ name, removeNode }) => {
     return <button
         className="action-btn delete"
-        onClick={(e) => {
+        onClick={async (e) => {
             e.stopPropagation();
-            if (confirm(`确定删除"${name}"及其所有子节点吗？`)) {
+            if (await waitConfirm(`确定删除"${name}"及其所有子节点吗？`)) {
                 removeNode();
             }
         }}
